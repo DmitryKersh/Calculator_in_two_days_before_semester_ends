@@ -14,7 +14,7 @@ AlwaysBreakAfterReturnType: None
 AlwaysBreakTemplateDeclarations: Yes
 BreakBeforeBraces: Custom
 BraceWrapping:
-  AfterCaseLabel: false
+
   AfterClass: false
   AfterControlStatement: false
   AfterEnum: false

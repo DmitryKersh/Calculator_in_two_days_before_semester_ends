@@ -60,6 +60,14 @@ public:
     SquareRootOperation(const std::shared_ptr<Operation> operand) : UnaryOperation(operand) {}
 };
 
+class AbsOperation final : public UnaryOperation {
+    double apply(double value) const override {
+        return fabs(value);
+    }
+public:
+    AbsOperation(const std::shared_ptr<Operation> operand) : UnaryOperation(operand) {}
+};
+
 class ConstantOperation final : public Operation {
     double value;
 public:
