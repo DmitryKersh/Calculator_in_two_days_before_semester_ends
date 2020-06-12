@@ -1,8 +1,6 @@
 #ifndef CALCULATOR_IN_TWO_DAYS_BEFORE_SEMESTER_ENDS_OPERATION_H
 #define CALCULATOR_IN_TWO_DAYS_BEFORE_SEMESTER_ENDS_OPERATION_H
 
-
-
 class Operation {
 public:
     virtual double result() const = 0;

@@ -1,0 +1,27 @@
+#ifndef CALCULATOR_IN_TWO_DAYS_BEFORE_SEMESTER_ENDS_ENUM_OPERATIONS_H
+#define CALCULATOR_IN_TWO_DAYS_BEFORE_SEMESTER_ENDS_ENUM_OPERATIONS_H
+
+enum OPERATIONS {
+    // unary
+    SIN,
+    COS,
+    TG,
+    CTG,
+    ABS,
+    EXP,
+    SQRT,
+    U_MINUS,
+
+    // binary
+    POWER,
+    MULT,
+    DIV,
+    SUM,
+    SUB,
+
+    //brackets
+    OPEN_BRACKET,
+    CLOSE_BRACKET
+};
+
+#endif //CALCULATOR_IN_TWO_DAYS_BEFORE_SEMESTER_ENDS_ENUM_OPERATIONS_H
