@@ -34,7 +34,7 @@ std::queue<std::variant<double, OPERATIONS>> Parser(){
     double x = 0;
     bool x_is_known = false;
 
-    char c = expression_stream.get();
+    int c = expression_stream.get();
     bool minus_is_unary = true; // if no number before minus -> it's unary minus
 
     while (c != EOF) {
@@ -43,23 +43,24 @@ std::queue<std::variant<double, OPERATIONS>> Parser(){
             std::string number_string;
             do {
                 minus_is_unary = false;
-                number_string += c;
+                number_string += static_cast<char> c;
             } while ((isdigit(c == expression_stream.get()) || c == '.' ) && c != EOF);
 
             double number = std::stod(number_string);
             values.push(number);
 
-            if (c == ' ')
+            if (c == ' '){
                 c = expression_stream.get();
+            }
         } else {
             // reading operations and putting them on operation stack
             // and if necessary, to main stack
             if (c != '(' && c != ')'){ // if not a bracket
                 std::string op_string;
-                bool is_not_operator = true;
+                bool is_not_operator = true; // checks if we've already read an operation
 
                 do {
-                    op_string += c;
+                    op_string += static_cast<char> c;
                     if (string_to_OP.count(op_string) || op_string == "pi" || op_string == "e" || op_string == "x"){
                         // if we've read an operation from map or constants or user's variable
                         is_not_operator = false;
@@ -101,10 +102,40 @@ std::queue<std::variant<double, OPERATIONS>> Parser(){
                         values.push(Stack.top());
                         Stack.pop();
                     }
+                    Stack.push(op);
+                    minus_is_unary = false;
                 }
             }
         }
-
+        // skipping spaces
+        if (c == ' '){
+            c = expression_stream.get();
+        } else if (c == '(') {
+            // putting opening brackets on stack
+            Stack.push(OPEN_BRACKET);
+        } else if (!Stack.empty()) {
+            while (!Stack.empty() && Stack.top != CLOSE_BRACKET){
+                values.push(Stack.top());
+                Stack.pop();
+            }
+        }
+        c = expression_stream.get();
+        if (c == ' '){
+            c = expression_stream.get();
+        }
     }
+
+    if (!Stack.empty()){
+        if (Stack.top() == OPEN_BRACKET){
+            Stack.pop();
+        }
+        while (!Stack.empty()){
+            if (Stack.top() != OPEN_BRACKET && Stack.top != CLOSE_BRACKET){
+                values.push(Stack.top());
+            }
+            Stack.pop();
+        }
+    }
+    return values;
 }
 #endif //CALCULATOR_IN_TWO_DAYS_BEFORE_SEMESTER_ENDS_PARSER_H
