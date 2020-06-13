@@ -12,7 +12,6 @@
 
 #include "Enum_operations.h"
 
-
 // This function uses "shunting-yard" algorithm to parse expression
 
 std::queue<std::variant<double, OPERATIONS>> parse_expression(const std::string& expression){
@@ -96,11 +95,6 @@ std::queue<std::variant<double, OPERATIONS>> parse_expression(const std::string&
             }
         }
         minus_is_unary = false;
-        /*
-        // skipping spaces
-        while (c == ' '){
-            c = expression_stream.get();
-        } */
 
         if (c == '(') {
             // putting opening brackets on stack
@@ -110,11 +104,7 @@ std::queue<std::variant<double, OPERATIONS>> parse_expression(const std::string&
                 values.push(Stack.top());
                 Stack.pop();
             }
-        }/*
-        c = expression_stream.get();
-        if (c == ' '){
-            c = expression_stream.get();
-        }*/
+        }
     }
 
     if (!Stack.empty()){
