@@ -86,7 +86,7 @@ std::queue<std::variant<double, OPERATIONS>> parse_expression(const std::string&
             } else {
                 OPERATIONS op = string_to_OP.at(op_string); // finding what operation is it
                 if (op_string == "-" && minus_is_unary) { op = U_MINUS; }
-                while (!Stack.empty() /* && Stack.top() <= op */ && Stack.top() != OPEN_BRACKET) {
+                while (!Stack.empty()  && get_priority(Stack.top()) >= get_priority(op)  && Stack.top() != OPEN_BRACKET) {
                     values.push(Stack.top());
                     Stack.pop();
                 }
@@ -99,11 +99,13 @@ std::queue<std::variant<double, OPERATIONS>> parse_expression(const std::string&
         if (c == '(') {
             // putting opening brackets on stack
             Stack.push(OPEN_BRACKET);
+            c = expression_stream.get();
         } else if (!Stack.empty() && c == ')') {
             while (!Stack.empty() && Stack.top() != OPEN_BRACKET){
                 values.push(Stack.top());
                 Stack.pop();
             }
+            c = expression_stream.get();
         }
     }
 

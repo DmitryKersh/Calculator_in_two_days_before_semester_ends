@@ -6,6 +6,7 @@
 using std::cout;
 
 int main() {
+
     try{
         std::string expression;
         getline(std::cin, expression);
