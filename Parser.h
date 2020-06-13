@@ -20,7 +20,7 @@ std::queue<std::variant<double, OPERATIONS>> parse_expression(const std::string&
             {"+", SUM},{"-", SUB},{"/", DIV},
             {"*", MULT},{"^", POWER},{"sin", SIN},
             {"cos", COS},{"tg", TG},{"ctg", CTG},
-            {"sqrt", SQRT},{"exp", EXP},{"abs", ABS},
+            {"sqrt", SQRT},{"Exp", EXP},{"abs", ABS},
     };
 
     std::queue<std::variant<double, OPERATIONS>> values;
@@ -40,36 +40,35 @@ std::queue<std::variant<double, OPERATIONS>> parse_expression(const std::string&
             do {
                 minus_is_unary = false;
                 number_string += static_cast<char>(c);
-            } while (isdigit(c = expression_stream.get()) || c == '.' );
+            } while (isdigit(c = expression_stream.get()) || c == '.');
 
             double number = std::stod(number_string);
             values.push(number);
-
-            if (c == ' '){
-                c = expression_stream.get();
-            }
-        } else if (c != '(' && c != ')'){ // if not a bracket
+        }
+        while (c == ' ') { c = expression_stream.get(); }
+        if (c != '(' && c != ')') { // if not a bracket
             std::string op_string;
             bool is_not_operation = true; // checks if we've already read an operation
 
             do {
                 op_string += static_cast<char>(c);
-                if (string_to_OP.count(op_string) || op_string == "pi" || op_string == "e" || op_string == "x"){
+                if (string_to_OP.count(op_string) || op_string == "pi" || op_string == "e" || op_string == "x") {
                     // if we've read an operation from map or constants or user's variable
                     is_not_operation = false;
                 }
                 // reading char by char until we meet a bracket or a number, or already have an operation
             } while (!isdigit(c = expression_stream.get()) && c != '(' && c != ')' && c != EOF && is_not_operation);
-
+            if (c == EOF) break;
             // if we've read something that's not an operation, pi, e, x
-            if (op_string != "x" && op_string != "pi" && op_string != "e" && !string_to_OP.count(op_string)){
+            if (op_string != "x" && op_string != "pi" && op_string != "e" && !string_to_OP.count(op_string)) {
                 throw std::invalid_argument("Part of an input can't be treated neither as operator "
-                                                "nor as constant or variable\nInput: " + op_string);
+                                            "nor as constant or variable\nInput: "
+                                            + op_string);
             }
             // if we've read 'x', push it to values' stack
             // if necessary, ask the value of x
-            if (op_string == "x"){
-                if (x_is_known){
+            if (op_string == "x") {
+                if (x_is_known) {
                     values.push(x);
                 } else {
                     std::cout << "Enter x:" << std::endl;
@@ -79,27 +78,25 @@ std::queue<std::variant<double, OPERATIONS>> parse_expression(const std::string&
                     x_is_known = true;
                     values.push(x);
                 }
-            } else if (op_string == "e"){ // if we've read a constant, just push them to values' stack
+            } else if (op_string == "e") { // if we've read a constant, just push them to values' stack
                 values.push(M_E);
                 minus_is_unary = false;
-            } else if (op_string == "pi"){
+            } else if (op_string == "pi") {
                 values.push(M_PI);
                 minus_is_unary = false;
             } else {
                 OPERATIONS op = string_to_OP.at(op_string); // finding what operation is it
-                if (op_string == "-" && minus_is_unary){
-                    op = U_MINUS;
-                }
-                Stack.push(op);
-                // moving operations from stack to main queue
-                while (!Stack.empty() && Stack.top() <= op && Stack.top() != OPEN_BRACKET){
+                if (op_string == "-" && minus_is_unary) { op = U_MINUS; }
+                while (!Stack.empty() /* && Stack.top() <= op */ && Stack.top() != OPEN_BRACKET) {
                     values.push(Stack.top());
                     Stack.pop();
                 }
-                minus_is_unary = false;
+                Stack.push(op);
+                // moving operations from stack to main queue
             }
-
-        }/*
+        }
+        minus_is_unary = false;
+        /*
         // skipping spaces
         while (c == ' '){
             c = expression_stream.get();
@@ -113,11 +110,11 @@ std::queue<std::variant<double, OPERATIONS>> parse_expression(const std::string&
                 values.push(Stack.top());
                 Stack.pop();
             }
-        }
+        }/*
         c = expression_stream.get();
         if (c == ' '){
             c = expression_stream.get();
-        }
+        }*/
     }
 
     if (!Stack.empty()){
